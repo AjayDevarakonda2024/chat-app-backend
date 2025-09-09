@@ -8,7 +8,7 @@ exports.sendNotificationToAll = async (req, res) => {
 
     // Get all stored tokens from DB
     const tokenDocs = await Tokens.find({});
-    const tokens = tokenDocs.map(t => t.tokens).flat();
+    const tokens = tokenDocs.map(t => t.token).flat();
 
     if (tokens.length === 0) {
       return res.status(404).json({ message: "No tokens found" });
