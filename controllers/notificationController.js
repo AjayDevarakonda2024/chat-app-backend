@@ -28,7 +28,8 @@ exports.sendNotificationToAll = async (req, res) => {
     );
     res.status(200).json({
       success: response.successCount,
-      failed: response.failureCount
+      failed: response.failureCount,
+      responses : response.responses
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
