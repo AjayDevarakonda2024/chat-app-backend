@@ -21,8 +21,8 @@ exports.saveNewToken = async (req, res) => {
       return res.status(200).json({ message: "Token already exists" });
     }
 
-    const newToken = new Tokens({ tokens });
-    await newToken.save();
+    const newToken = new Tokens(req.body);
+    await Tokens.insertOne(newToken);
 
     res.status(200).json({ message: "Token saved successfully" });
   } catch (err) {
