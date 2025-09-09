@@ -21,7 +21,7 @@ exports.sendNotificationToAll = async (req, res) => {
     };
 
     // Send notification
-    const response = await admin.messaging().sendMulticast(message);
+    const response = await admin.messaging().sendEachForMulticast(message);
     res.status(200).json({
       success: response.successCount,
       failed: response.failureCount
