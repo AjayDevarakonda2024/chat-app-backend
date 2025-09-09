@@ -13,16 +13,16 @@ exports.getAllTokens = async (req, res) => {
 // Save new token
 exports.saveNewToken = async (req, res) => {
   try {
-    const { tokens } = req.body;
+    const { token } = req.body;
 
     // Check if token already exists
-    const exists = await Tokens.findOne({ tokens });
+    const exists = await Tokens.findOne({ token });
     if (exists) {
       return res.status(200).json({ message: "Token already exists" });
     }
 
-    const newToken = new Tokens(req.body);
-    await Tokens.insertOne(newToken);
+    const newToken = new Tokens({token});
+    await newToken.save();
 
     res.status(200).json({ message: "Token saved successfully" });
   } catch (err) {
