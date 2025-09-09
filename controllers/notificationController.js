@@ -8,20 +8,24 @@ exports.sendNotificationToAll = async (req, res) => {
 
     // Get all stored tokens from DB
     const tokenDocs = await Tokens.find({});
-    const tokens = tokenDocs.map(t => t.tokens);
+    const tokens = tokenDocs.map(t => t.tokens).flat();
 
     if (tokens.length === 0) {
       return res.status(404).json({ message: "No tokens found" });
     }
 
-    // Create notification payload
-    const message = {
-      notification: { title, body },
-      tokens: tokens
-    };
+    
 
     // Send notification
-    const response = await admin.messaging().sendEachForMulticast(message);
+    const response = await admin.messaging().sendEachForMulticast(
+      {
+        tokens : tokens,
+        notification : {
+          title,
+          body
+        }
+      }
+    );
     res.status(200).json({
       success: response.successCount,
       failed: response.failureCount
