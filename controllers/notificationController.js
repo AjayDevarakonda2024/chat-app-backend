@@ -23,7 +23,12 @@ exports.sendNotificationToAll = async (req, res) => {
         notification : {
           title,
           body
-        }
+        },
+        webpush: {
+          fcmOptions: {
+            link: "https://chat-app-gamma-roan-43.vercel.app/", // ✅ Change to your frontend URL
+          },
+        },
       }
     );
     res.status(200).json({
