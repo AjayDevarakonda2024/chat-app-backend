@@ -20,7 +20,7 @@ exports.sendNotificationToAll = async (req, res) => {
     const response = await admin.messaging().sendEachForMulticast(
       {
         tokens : tokens,
-        notification : {
+        data : {
           title,
           body,
           link: "https://chat-app-gamma-roan-43.vercel.app/", // ✅ Change to your frontend URL
