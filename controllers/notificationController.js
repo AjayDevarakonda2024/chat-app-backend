@@ -40,11 +40,16 @@ exports.sendNotificationToAll = async (req, res) => {
 // Send notification to **specific user**
 exports.sendNotificationToUser = async (req, res) => {
   try {
-    const { token, title, body } = req.body;
+    const { token, title, body, link } = req.body;
 
+    
     const message = {
-      notification: { title, body },
-      token: token
+      token: token,
+      data: { 
+        title, 
+        body,
+        link: "https://chat-app-gamma-roan-43.vercel.app/"
+      },
     };
 
     const response = await admin.messaging().send(message);
