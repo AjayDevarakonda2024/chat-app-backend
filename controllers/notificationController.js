@@ -1,5 +1,19 @@
 const Tokens = require("../tokens/tokens");
-const admin = require("../config/firebase");
+const axios = require("axios");
+
+// Expo push API endpoint
+const EXPO_PUSH_URL = "https://exp.host/--/api/v2/push/send";
+
+// Helper to send notification
+const sendExpoNotification = async (token, title, body, link) => {
+  return axios.post(EXPO_PUSH_URL, {
+    to: token,
+    sound: "default",
+    title,
+    body,
+    data: { link: link || "https://chat-app-gamma-roan-43.vercel.app/" },
+  });
+};
 
 // Send notification to **all users**
 exports.sendNotificationToAll = async (req, res) => {
@@ -14,23 +28,17 @@ exports.sendNotificationToAll = async (req, res) => {
       return res.status(404).json({ message: "No tokens found" });
     }
 
-    
+    // Send notifications
+    const promises = tokens.map(token => sendExpoNotification(token, title, body));
+    const responses = await Promise.allSettled(promises);
 
-    // Send notification
-    const response = await admin.messaging().sendEachForMulticast(
-      {
-        tokens : tokens,
-        data : {
-          title,
-          body,
-          link: "https://chat-app-gamma-roan-43.vercel.app/", // ✅ Change to your frontend URL
-        },
-      }
-    );
+    const successCount = responses.filter(r => r.status === "fulfilled").length;
+    const failureCount = responses.filter(r => r.status === "rejected").length;
+
     res.status(200).json({
-      success: response.successCount,
-      failed: response.failureCount,
-      response: response.responses
+      success: successCount,
+      failed: failureCount,
+      responses,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -42,18 +50,9 @@ exports.sendNotificationToUser = async (req, res) => {
   try {
     const { token, title, body, link } = req.body;
 
-    
-    const message = {
-      token: token,
-      data: { 
-        title, 
-        body,
-        link: "https://chat-app-gamma-roan-43.vercel.app/"
-      },
-    };
+    const response = await sendExpoNotification(token, title, body, link);
 
-    const response = await admin.messaging().send(message);
-    res.status(200).json({ success: true, response });
+    res.status(200).json({ success: true, response: response.data });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
