@@ -11,7 +11,7 @@ const sendExpoNotification = async (token, title, body, link) => {
     sound: "default",
     title,
     body,
-    data: { link: link || "https://chat-app-gamma-roan-43.vercel.app/" },
+    data: { link: link || null },
   });
 };
 
@@ -48,9 +48,9 @@ exports.sendNotificationToAll = async (req, res) => {
 // Send notification to **specific user**
 exports.sendNotificationToUser = async (req, res) => {
   try {
-    const { token, title, body, link } = req.body;
+    const { token, title, body} = req.body;
 
-    const response = await sendExpoNotification(token, title, body, link);
+    const response = await sendExpoNotification(token, title, body);
 
     res.status(200).json({ success: true, response: response.data });
   } catch (err) {
