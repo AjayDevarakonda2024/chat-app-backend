@@ -48,9 +48,15 @@ exports.sendNotificationToAll = async (req, res) => {
 // Send notification to **specific user**
 exports.sendNotificationToUser = async (req, res) => {
   try {
-    const { token, title, body} = req.body;
+    const { token, title, body, data} = req.body;
 
-    const response = await sendExpoNotification(token, title, body);
+    const response = await axios.post(EXPO_PUSH_URL, {
+      to: token,
+      sound: "default",
+      title,
+      body,
+      data: data || {}, // 👈 include custom data (e.g. username, token, etc.)
+    });
 
     res.status(200).json({ success: true, response: response.data });
   } catch (err) {
