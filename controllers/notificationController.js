@@ -12,7 +12,14 @@ const sendExpoNotification = async (token, title, body, link) => {
     title,
     body,
     data: { link: link || null },
-  });
+  },
+  {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+  }
+);
 };
 
 // Send notification to **all users**
